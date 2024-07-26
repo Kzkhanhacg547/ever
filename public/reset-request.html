@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password Request</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enter Reset Code</h1>
+        <form id="reset-code-form">
+            <input type="text" id="reset-code" placeholder="Reset Code" required>
+            <button type="submit">Verify Code</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('reset-code-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const resetCode = document.getElementById('reset-code').value;
+
+            const response = await fetch('/api/verify-reset-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: resetCode })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                window.location.href = '/reset-pass?token=' + resetCode;
+            } else {
+                alert(data.error);
+            }
+        });
+    </script>
+</body>
+</html>
